@@ -12,11 +12,13 @@ Four EC2 instances run the application:
 3. **Database (DynamoDB Local)** — one Java process holds the `Polls` table on port **8000**. Both Flask instances use the same database (`DYNAMODB_ENDPOINT_URL` in `.env`).
 
 
+
+![Arch](arch.png)
+
+
 The database and Flask instances have a tag **`voting-role`** (`db` or `flask`). Flask and the proxy use the EC2 API (`DescribeInstances`) and that tag to find private IP addresses. They do not have those IPs written into user data.
 
 Security groups control who can reach each instance. Only the proxy allows SSH and HTTP from the internet. SSH to Flask or the database must go through the proxy (those security groups allow port 22 only from the proxy). Flask accepts port 5000 only from the proxy. DynamoDB Local accepts port 8000 only from the Flask instances — not from the proxy.
-
-![Arch](arch.png)
 
 
 ## Flask layers
